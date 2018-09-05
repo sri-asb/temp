@@ -1,1 +1,54 @@
 https://sgazp0072/app/kibana#/dashboard/79ffd6e0-faa0-11e6-947f-177f697178b8?_g=(refreshInterval%3A(display%3AOff%2Cpause%3A!f%2Cvalue%3A0)%2Ctime%3A(from%3Anow-30m%2Cmode%3Aquick%2Cto%3Anow))
+
+
+
+- module: jolokia
+  metricsets: ["jmx"]
+  enabled: true
+  period: 10s
+  hosts: ["http://localhost:8778"]
+  namespace: "metrics"
+  path: "/jolokia/read?ignoreErrors=true&canonicalNaming=false"
+  #username: "user"
+  #password: "secret"
+  jmx.mappings:
+    - mbean: 'java.lang:type=Runtime'
+      attributes:
+        - attr: Uptime
+          field: uptime
+    #- mbean: 'java.lang:type=Memory'
+    #  attributes:
+    #    - attr: HeapMemoryUsage
+    #      field: memory.heap_usage
+    #    - attr: NonHeapMemoryUsage
+    #      field: memory.non_heap_usage
+    - mbean: 'org.apache.cassandra.metrics:name=Latency,scope=Read,type=ClientRequest'
+      attributes:
+        - attr: Count
+          field: read.Count
+        - attr: 75thPercentile
+          field: read.75thPercentile
+        - attr: OneMinuteRate
+          field: read.OneMinuteRate
+    - mbean: 'org.apache.cassandra.metrics:name=Latency,scope=Write,type=ClientRequest'
+      attributes:
+        - attr: Count
+          field: write.Count
+        - attr: 75thPercentile
+          field: write.75thPercentile
+        - attr: OneMinuteRate
+          field: write.OneMinuteRate
+    - mbean: 'org.apache.cassandra.metrics:type=Compaction,name=PendingTasks'
+      attributes:
+        - attr: Value
+          field: PendingTasks_Value
+    # GC Metrics - this depends on what is available on your JVM
+    #- mbean: 'java.lang:type=GarbageCollector,name=ConcurrentMarkSweep'
+    #  attributes:
+    #    - attr: CollectionTime
+    #      field: gc.cms_collection_time
+    #    - attr: CollectionCount
+    #      field: gc.cms_collection_count
+
+  jmx.application:
+  jmx.instance:
