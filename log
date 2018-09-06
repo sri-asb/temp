@@ -52,3 +52,6 @@ https://sgazp0072/app/kibana#/dashboard/79ffd6e0-faa0-11e6-947f-177f697178b8?_g=
 
   jmx.application:
   jmx.instance:
+
+
+Could not locate that index-pattern (id: metricbeat-*
